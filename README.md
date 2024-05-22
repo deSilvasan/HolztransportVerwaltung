@@ -1,7 +1,14 @@
 # HolztransportVerwaltung
 
 ## Beschreibung:
-Die HolztransportVerwaltung verwaltet die Aufträge, den Holzlagerbestand, die Maschinen, die Kunden, die Angestellten, den Urlaub von Angestellten und die Finanzen vom Unternehmen **Schennet Holz**. Das Postgre Datenbanksystem wird verwendet eventuell ein ORM. 
+Die HolztransportVerwaltung verwaltet die Aufträge, den Holzlagerbestand, die Maschinen, die Kunden, die Angestellten, den Urlaub von Angestellten und die Finanzen vom Unternehmen **Schennet Holz**. Man kann einen Auftrag für einen Kunden anlegen, dabei werden
+* (wenn benötigt) der Holzlagerbestand angepasst und die Kosten in den Auftrag übernommen
+* die Maschinen in der Zeit in der sie gebraucht werden auf besetzt gesetzt und die Maschinenkosten in den Auftrag übernommen
+* (wenn benötigt) die Angestellten in der Zeit in der sie gebraucht werden auf besetzt gesetzt (dabei werden die Urlaubstage beachtet) und die Personalkosten in den Auftrag übernommen
+Wenn dann der Auftrag abgeschlossen ist (wenn das Auftragsdatum vorbei ist) werden die Kosten in das Finanzmanagement-Table hineingeschrieben. Wenn dann der Kunde bezahlt hat, werden die Kosten als Gewinn in die Finanzmanagement-Table hineingeschrieben.
+Am Monatsende werden dann immer die Gehälter von den Angestellten abgebucht. Wenn Kosten bei den Maschinen anfallen werden diese auch in das Finanzmanagement-Table hineingeschrieben. Es kann auch eine Bilanz ausgegeben werden.
+
+Das Postgre Datenbanksystem wird verwendet eventuell ein ORM. 
 
 ## Tabellen:
 * Maschinen - Die Maschinen vom Unternehmen werden in dieser Tabelle abgebildet
