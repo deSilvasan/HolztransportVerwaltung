@@ -9,7 +9,7 @@ Die HolztransportVerwaltung verwaltet die Aufträge, den Holzlagerbestand, die M
 Wenn dann der Auftrag abgeschlossen ist (wenn das Auftragsdatum vorbei ist) werden die Kosten in das Finanzmanagement-Table hineingeschrieben. Wenn dann der Kunde bezahlt hat, werden die Kosten als Gewinn in die Finanzmanagement-Table hineingeschrieben.
 Am Monatsende werden dann immer die Gehälter von den Angestellten abgebucht. Wenn Kosten bei den Maschinen anfallen werden diese auch in das Finanzmanagement-Table hineingeschrieben. Es kann auch eine Bilanz ausgegeben werden.
 
-Das Postgre Datenbanksystem wird verwendet eventuell ein ORM. 
+Das Postgre Datenbanksystem wird verwendet. 
 
 ## Tabellen:
 * Maschinen - Die Maschinen vom Unternehmen werden in dieser Tabelle abgebildet
@@ -17,7 +17,7 @@ Das Postgre Datenbanksystem wird verwendet eventuell ein ORM.
 * Angestellte - Die Angestellten vom Unternehmen werden abgebildet
 * Aufträge - Kundenauftrage werden mit benötigtem Holz, Personal und Auftragart abgebildet
 * Holzagerbestand - Holzlagerbestand wird in dieser Tabelle abgebildet
-* Finanzmanagement - Gewinn, Erlös und Bilanz vom Unternehmen werden dort abgebildet
+* Konten - Gewinn, Erlös und Bilanz vom Unternehmen werden dort abgebildet
 
 ## Ziele:
 * Die Auftrag Tabelle beinhaltet Kunden, benötigte Maschinen, Dauer, Angestellte und die Auftragskosten. Nach dem der Auftrag ausgeführt wurde (wenn das Datum vom Auftrag vorbei ist) werden die Kosten und Gewinne in die Finanzmanagement-Tabelle übernommen.

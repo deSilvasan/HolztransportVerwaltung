@@ -1,0 +1,97 @@
+
+CREATE ROLE silva LOGIN PASSWORD 'silva12345';
+
+GRANT ALL ON DATABASE "holzverwaltung" TO silva;
+
+GRANT ALL ON 
+
+psql -U silva -W holzverwaltung
+
+SELECT 'CREATE DATABASE holzverwaltung' 
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'holzverwaltung')\gexec
+
+\c holzverwaltung
+
+CREATE TABLE kunden(
+kunden_id SERIAL PRIMARY KEY,
+name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE maschinen(
+maschinen_id SERIAL PRIMARY KEY,
+name VARCHAR(200),
+maschinentyp varchar(200),
+baujahr INT,
+betriebsstunden INT,
+angefalleneKosten DECIMAL(7,2),
+maschinenstundenkosten DECIMAL(5,2)
+);
+
+CREATE TABLE holz(
+holzId SERIAL PRIMARY KEY, 
+holzart varchar(200),
+feuchtigkeitsgehalt int,
+abmessungen varchar(20)
+);
+
+CREATE TABLE holzlager(
+bestandId SERIAL PRIMARY KEY,
+holzId int,
+mengelagernd int,
+mindestbestand int,
+FOREIGN KEY(holzId) REFERENCES holz(holzId)
+);
+
+CREATE TABLE angestellte(
+angestellten_id SERIAL PRIMARY KEY,
+name VARCHAR(200),
+gehalt DECIMAL(7,2),
+position varchar(150),
+urlaubstage DATE[],
+schwarzgeld DECIMAL(7,2),
+stundenlohn DECIMAL(5,2)
+);
+
+CREATE TABLE auftrag(
+rechnungsNr SERIAL PRIMARY KEY,
+zeitraum_a DATE,
+zeitraum_e DATE,
+kunden_id int,
+auftragsbeschreibung TEXT,
+FOREIGN KEY(kunden_id) REFERENCES kunden(kunden_id)
+);
+
+CREATE TABLE multiple_maschinen(
+auftragId int,
+maschinen_id int,
+maschinenstunden int,
+FOREIGN KEY(maschinen_id) REFERENCES maschinen(maschinen_id),
+FOREIGN KEY(auftragId) REFERENCES auftrag(rechnungsNr)
+);
+
+CREATE TABLE multiple_holz(
+auftragId int,
+holzId int,
+menge int,
+FOREIGN KEY(holzId) REFERENCES holz(holzId),
+FOREIGN KEY(auftragId) REFERENCES auftrag(rechnungsNr)
+);
+
+CREATE TABLE multiple_angestellte(
+auftragId int,
+angestellteId int,
+stunden int,
+FOREIGN KEY(angestellteId) REFERENCES angestellte(angestellten_id),
+FOREIGN KEY(auftragId) REFERENCES auftrag(rechnungsNr)
+);
+
+CREATE TYPE kontenart AS ENUM ('Aktiv','Passiv','Aufwand','Ertrag','Privat');
+
+CREATE TABLE konten(
+kontenId UUID PRIMARY KEY,
+kontenName varchar(200),
+kontenTyp kontenart,
+soll DECIMAL(5,2),
+haben DECIMAL(5,2),
+uebetrag DECIMAL(5,2)
+);
