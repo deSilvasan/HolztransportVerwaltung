@@ -24,11 +24,56 @@ public class Auftrag {
 			if(rs.getInt(1)<1) {
 				getDataJSON();
 			}
+			rs.close();
+			stmt.close();
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
 	}
+	public String[][] getAutrag(int KundenId) {
+		String[][] result = null;
+		try {
+			PreparedStatement prep = con.prepareStatement("SELECT count(*) FROM auftrag WHERE kunden_Id = ?");
+			prep.setInt(1, KundenId);
+			ResultSet rs = prep.executeQuery();
+			rs.next();
+			result = new String[rs.getInt(1)][4];
+			prep = con.prepareStatement("SELECT rechnungsNr, zeitraum_a, zeitraum_e, auftragsbeschreibung FROM auftrag WHERE kunden_Id = ?");
+			prep.setInt(1, KundenId);
+			rs = prep.executeQuery();
+			for (int i = 0; rs.next(); i++) {
+				result[i][0]=String.valueOf(rs.getInt(1));
+				result[i][1]=String.valueOf(rs.getDate(2));
+				result[i][2]=String.valueOf(rs.getDate(3));
+				result[i][3]=rs.getString(4);
+			}
+			rs.close();
+			prep.close();
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return result;
+	}
 	
+	public String[] getAutragRechnungsNr(int rechnungsNr) {
+		String[] result = null;
+		try {
+			PreparedStatement prep = con.prepareStatement("SELECT rechnungsNr, zeitraum_a, zeitraum_e, auftragsbeschreibung FROM auftrag WHERE rechnungsNr = ?");
+			prep.setInt(1, rechnungsNr);
+			ResultSet rs = prep.executeQuery();
+			rs.next();
+			result = new String[4];
+			result[0]=String.valueOf(rs.getInt(1));
+			result[1]=String.valueOf(rs.getDate(2));
+			result[2]=String.valueOf(rs.getDate(3));
+			result[3]=rs.getString(4);
+			rs.close();
+			prep.close();
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return result;
+	}
 	private void insertData(Date zeitraum_a, Date zeitraum_b, String kundeN, String auftragsbeschreibung, String[][] maschinen, String[][]holz, 
 			String[][] angestellte) {
 		try {

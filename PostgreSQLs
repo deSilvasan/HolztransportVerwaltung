@@ -2,8 +2,16 @@
 CREATE ROLE silva LOGIN PASSWORD 'silva12345';
 
 GRANT ALL ON DATABASE "holzverwaltung" TO silva;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO silva;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO silva;
+ALTER DATABASE holzverwaltung OWNER TO silva;
 
-GRANT ALL ON 
+ALTER TABLE public.auftrag OWNER TO silva;
+ALTER TABLE public.angestellte OWNER TO silva;
+ALTER TABLE public.holz OWNER TO silva;
+ALTER TABLE public.holzlager OWNER TO silva;
+ALTER TABLE public.kunden OWNER TO silva;
+ALTER TABLE public.maschinen OWNER TO silva;
 
 psql -U silva -W holzverwaltung
 
@@ -31,7 +39,8 @@ CREATE TABLE holz(
 holzId SERIAL PRIMARY KEY, 
 holzart varchar(200),
 feuchtigkeitsgehalt int,
-abmessungen varchar(20)
+abmessungen varchar(20),
+kosten Decimal(7,2)
 );
 
 CREATE TABLE holzlager(
@@ -95,3 +104,43 @@ soll DECIMAL(5,2),
 haben DECIMAL(5,2),
 uebetrag DECIMAL(5,2)
 );
+
+SELECT a.rechnungsNr, a.zeitraum_a, a.zeitraum_e, a.auftragsbeschreibung, mh.menge, h.holzart, h.feuchtigkeitsgehalt, h.abmessungen,h.kosten, ma.stunden, an.name, an.position, an.stundenlohn, mm.maschinenstunden, m.name, m.maschinentyp, m.maschinenstundenkosten FROM auftrag a 
+JOIN kunden k ON a.kunden_id = k.kunden_id
+JOIN multiple_holz mh ON a.rechnungsNr = mh.auftragId
+JOIN holz h ON mh.holzId = h.holzId
+JOIN multiple_angestellte ma ON a.rechnungsNr = ma.auftragId
+JOIN angestellte an ON ma.angestellteId = an.angestellten_id
+JOIN multiple_maschinen mm ON a.rechnungsNr = mm.auftragId
+JOIN maschinen m ON mm.maschinen_id = m.maschinen_id;
+
+SELECT a.rechnungsNr, a.zeitraum_a, a.zeitraum_e, a.auftragsbeschreibung FROM auftrag a 
+JOIN kunden k ON a.kunden_id = k.kunden_id;
+
+SELECT h.holzart, h.abmessungen, mh.menge, h.kosten FROM holz h
+JOIN multiple_holz mh ON mh.holzId=h.holzId 
+JOIN auftrag a ON mh.auftragId = a.rechnungsNr WHERE a.rechnungsNr = ?;
+
+SELECT m.name, m.maschinentyp, m.maschinenstundenkosten, mm.maschinenstunden FROM maschinen m 
+JOIN multiple_maschinen mm ON m.maschinen_id = mm.maschinen_id
+JOIN auftrag a ON mm.auftragId = a.rechnungsNr WHERE a.rechnungsNr = ?;
+
+SELECT a.position, a.name, a.stundenlohn, ma.stunden FROM angestellte a 
+JOIN multiple_angestellte ma ON a.angestellten_id = ma.angestellteid
+JOIN auftrag af ON ma.auftragId = af.rechnungsNr;
+
+SELECT name, maschinentyp, baujahr, betriebsstunden, angefallenekosten, maschinenstundenkosten FROM maschinen m;
+
+SELECT k.name FROM kunden k 
+JOIN auftrag a ON a.kunden_id = k.kunden_id;
+
+SELECT rechnungsNr, zeitraum_a, zeitraum_e, kunden_id, auftragsbeschreibung FROM auftrag;
+DROP TABLE IF EXISTS maschinen;
+
+SELECT holzart, feuchtigkeitsgehalt, abmessungen, kosten FROM holz;
+SELECT name, gehalt, position, urlaubstage, schwarzgeld, stundenlohn FROM angestellte;
+SELECT holzid, mengelagernd, mindestbestand FROM holzlager;
+SELECT holzart, abmessungen FROM holz WHERE holzId = ;
+
+SELECT mengelagernd FROM holzlager hl 
+JOIN holz h ON hl.holzId = h.holzId WHERE hl.holzId = ?;

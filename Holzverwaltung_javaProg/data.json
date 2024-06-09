@@ -62,27 +62,32 @@
         {
             "holzart":"Zirbe",
             "feuchtigkeitsgehalt":40,
-            "abmessungen":"R1.2x5"
+            "abmessungen":"R1.2x5",
+            "kosten":"12.5"
         },
         {
             "holzart":"Lärche",
             "feuchtigkeitsgehalt":80,
-            "abmessungen":"R0.5x3"
+            "abmessungen":"R0.5x3",
+            "kosten":"7.5"
         },
         {
             "holzart":"Fichte",
             "feuchtigkeitsgehalt":20,
-            "abmessungen":"R0.75x3"
+            "abmessungen":"R0.75x3",
+            "kosten":"8.5"
         },
         {
             "holzart":"Kiefer",
             "feuchtigkeitsgehalt":50,
-            "abmessungen":"R0.41x4"
+            "abmessungen":"R0.41x4",
+            "kosten":"5.5"
         },
         {
             "holzart":"Lärche",
             "feuchtigkeitsgehalt":40,
-            "abmessungen":"R1x4"
+            "abmessungen":"R1x4",
+            "kosten":"7.2"
         }
     ],
     "angestellte":[

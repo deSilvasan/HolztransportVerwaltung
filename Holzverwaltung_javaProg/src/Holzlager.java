@@ -27,6 +27,29 @@ public class Holzlager {
 		}
 	}
 	
+	public boolean checkHolzbestand(int holzId, int mengeBenötigt) {
+		boolean result = false;
+		try {
+			//Lagerbestand von Holz holzen
+			PreparedStatement prep = con.prepareStatement("SELECT mengelagernd FROM holzlager hl "
+					+ "JOIN holz h ON hl.holzId = h.holzId WHERE hl.holzId = ?; ");
+			prep.setInt(1, holzId);
+			ResultSet rs = prep.executeQuery();
+			rs.next();
+			int mengeLagernd = rs.getInt(1);
+			if(mengeBenötigt>mengeLagernd) {
+				result = false;
+			} else if (mengeLagernd>mengeBenötigt) {
+				result = true;
+			}
+			rs.close();
+			prep.close();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return result;
+	}
+	
 	private void insertData(String holzart, String abmessungen, int mengelagernd, int mindestbestand) {
 		try {
 			//holzId von holz tabelle suchen

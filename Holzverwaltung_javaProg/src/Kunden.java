@@ -22,6 +22,8 @@ public class Kunden {
 			if(rs.getInt(1)<1) {
 				getDataJSON();
 			}
+			stmt.close();
+			rs.close();
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -32,6 +34,7 @@ public class Kunden {
 			PreparedStatement prep = con.prepareStatement("INSERT INTO kunden (name) VALUES(?)");
 			prep.setString(1, name);
 			prep.executeUpdate();
+			prep.close();
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -50,5 +53,23 @@ public class Kunden {
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
+	}
+	public String[] getKunde(String name) {
+		String[] result = new String[3];
+		try {
+			//PreparedStatement prep = con.prepareStatement("SELECT * FROM kunden WHERE name = ? OR name LIKE CONCAT('%,?,%')");
+			PreparedStatement prep = con.prepareStatement("SELECT * FROM kunden WHERE name = ?");
+			prep.setString(1,name);
+			ResultSet rs = prep.executeQuery();
+			rs.next();
+			result[0] = String.valueOf(rs.getInt(1));
+			result[1] = rs.getString(2);
+			//result[2] = rs.getString(3);
+			rs.close();
+			prep.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return result;
 	}
 }

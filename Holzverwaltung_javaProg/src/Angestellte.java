@@ -25,9 +25,70 @@ public class Angestellte {
 			if(rs.getInt(1)<1) {
 				getDataJSON();
 			}
+			stmt.close();
+			rs.close();
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
+	}
+	
+	public String[][] getAllAngestellte(){
+		String[][] result = null;
+		try {
+			//die Anzahl der Angestellten für Auftrag suchen
+			PreparedStatement prep = con.prepareStatement("SELECT count(*) FROM angestellte;");
+			ResultSet rs = prep.executeQuery();
+			rs.next();
+			result = new String[rs.getInt(1)][6];
+			//angestellte anhand von auftragId heraussuchen
+			prep = con.prepareStatement("SELECT name, gehalt, position, schwarzgeld, stundenlohn FROM angestellte;");
+			rs = prep.executeQuery();
+			//Array befüllen
+			for (int i = 0; rs.next(); i++) {
+				result[i][0]=rs.getString(1);
+				result[i][1]=String.valueOf(rs.getDouble(2));
+				result[i][2]=rs.getString(3);
+				result[i][3]=String.valueOf(rs.getDouble(4));
+				result[i][5]=String.valueOf(rs.getDouble(5));
+			}
+			rs.close();
+			prep.close();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return result;
+	}
+	
+	public String[][] getAngestellte(int auftragId){
+		String[][] result = null;
+		try {
+			//die Anzahl der Angestellten für Auftrag suchen
+			PreparedStatement prep = con.prepareStatement("SELECT count(*) FROM angestellte a "
+					+ "JOIN multiple_angestellte ma ON a.angestellten_id = ma.angestellteid "
+					+ "JOIN auftrag af ON ma.auftragId = af.rechnungsNr WHERE af.rechnungsNr = ?");
+			prep.setInt(1, auftragId);
+			ResultSet rs = prep.executeQuery();
+			rs.next();
+			result = new String[rs.getInt(1)][4];
+			//angestellte anhand von auftragId heraussuchen
+			prep = con.prepareStatement("SELECT a.position, a.name, a.stundenlohn, ma.stunden FROM angestellte a "
+					+ "JOIN multiple_angestellte ma ON a.angestellten_id = ma.angestellteid "
+					+ "JOIN auftrag af ON ma.auftragId = af.rechnungsNr WHERE af.rechnungsNr = ?");
+			prep.setInt(1, auftragId);
+			rs = prep.executeQuery();
+			//Array befüllen
+			for (int i = 0; rs.next(); i++) {
+				result[i][0]=rs.getString(1);
+				result[i][1]=rs.getString(2);
+				result[i][2]=String.valueOf(rs.getDouble(3));
+				result[i][3]=String.valueOf(rs.getInt(4));
+			}
+			rs.close();
+			prep.close();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return result;
 	}
 	
 	private void insertData(String name, double gehalt, String position, Date[] urlaubstage, double schwarzgeld, double stundenlohn) {
@@ -41,6 +102,7 @@ public class Angestellte {
 			prep.setDouble(5, schwarzgeld);
 			prep.setDouble(6, stundenlohn);
 			prep.executeUpdate();
+			prep.close();
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
